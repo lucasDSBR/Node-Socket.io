@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<input type="text" id="campo" oninput="enviar()">
+	<button onclick="enviar()">Enviar</button>
+
+	<hr>
+	<p id="resultado"></p>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
+<script>
+	var socket = io("http://localhost:3000");
+	//emitindo evento: nome do evento e dados para enviar
+	socket.emit("evento_conexao", {dispositivo: "windows"});
+
+
+	socket.on("disconnect", () => {
+		console.log("socket disconnected");
+	});
+	//Recebendo evento emitido pelo servidor
+	socket.on("resultado", (data) => {
+		console.log(data);
+
+
+		var p = document.getElementById("resultado");
+
+		p.innerHTML = data;
+	});
+
+	function enviar(){
+		var input = document.getElementById("campo");
+		console.log(input.value);
+		socket.emit("campo", input.value);
+	}
+</script>
+</html>
